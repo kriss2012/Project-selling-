@@ -11,35 +11,34 @@
 </head>
 <body>
     <nav class="navbar" id="navbar">
-    <div class="logo">
-        <i class="fas fa-cube" style="color: #6366f1;"></i>
-        <span>DesignStudio</span>
-    </div>
-    
-    <ul class="nav-menu" id="navMenu">
-        <li><a href="#home" class="nav-link">Home</a></li>
-        <li><a href="#portfolio" class="nav-link">Work</a></li>
-        <li><a href="#maintenance" class="nav-link">Support</a></li>
-    </ul>
-
-    <div class="nav-actions">
-        <div id="userProfile" class="user-menu-group hidden">
-            <button onclick="toggleDashboard()" class="btn-dash-trigger">
-                <i class="fas fa-columns"></i> Dashboard
-            </button>
-            <img id="userAvatar" src="" alt="User">
+        <div class="logo">
+            <i class="fas fa-cube" style="color: #6366f1;"></i>
+            <span>DesignStudio</span>
         </div>
+        
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#portfolio" class="nav-link">Work</a></li>
+            <li><a href="#maintenance" class="nav-link">Support</a></li>
+        </ul>
 
-        <button id="loginBtn" class="btn btn-primary">Login</button>
-    </div>
-</nav>
+        <div class="nav-actions">
+            <div id="userProfile" class="user-menu-group hidden">
+                <button onclick="toggleDashboard()" class="btn-dash-trigger">
+                    <i class="fas fa-columns"></i> Dashboard
+                </button>
+                <img id="userAvatar" src="" alt="User">
+            </div>
+            <button id="loginBtn" class="btn btn-primary">Login</button>
+        </div>
+    </nav>
 
     <section id="home" class="hero">
         <div class="container">
             <h1 class="hero-title">Digital Excellence.<br>Delivered.</h1>
             <p class="hero-subtitle">Premium web development with 6 months of free dedicated support. We build future-proof digital experiences.</p>
             <button class="btn btn-primary" onclick="scrollToSection('portfolio')">View Projects</button>
-            <button class="btn btn-secondary" onclick="scrollToSection('contact')">Contact Us</button>
+            <button class="btn btn-secondary" onclick="scrollToSection('maintenance')">View Plans</button>
         </div>
     </section>
 
@@ -84,7 +83,6 @@
         <div class="container">
             <p>&copy; 2026 DesignStudio. Built by Krishna Patil.</p>
             <p><a href="{{ payment_link }}" target="_blank" style="color: var(--primary); text-decoration: none;">Pay via Razorpay Link</a></p>
-            <a href="#" id="adminLink" style="font-size: 0.8rem; color: #333;">Admin</a>
         </div>
     </footer>
 
@@ -99,7 +97,7 @@
                 <li><a href="#" class="sidebar-link" onclick="switchDashTab('dash-maintenance')"><i class="fas fa-tools"></i> Request Support</a></li>
             </ul>
             <div style="margin-top: auto;">
-                <button id="logoutBtn" class="btn btn-secondary" style="width: 100%;">Logout</button>
+                <button onclick="window.location.href='/logout'" class="btn btn-secondary" style="width: 100%; border-color: #ef4444; color: #ef4444;">Logout</button>
                 <button onclick="toggleDashboard()" class="btn btn-secondary" style="width: 100%; margin-top: 10px; border:none;">Close View</button>
             </div>
         </div>
@@ -119,11 +117,6 @@
                         <h3>Total Spent</h3>
                         <div class="val" id="totalSpentVal">₹0</div>
                     </div>
-                    <div class="stat-box">
-                        <h3>Warranty Status</h3>
-                        <div class="val" style="font-size: 1.2rem; color: #4ade80;">Active</div>
-                        <small style="color: var(--text-muted);">Ends in 180 days</small>
-                    </div>
                 </div>
             </div>
 
@@ -139,8 +132,7 @@
                                 <th style="padding: 15px; text-align: left;">Status</th>
                             </tr>
                         </thead>
-                        <tbody id="dashOrdersTable">
-                            </tbody>
+                        <tbody id="dashOrdersTable"></tbody>
                     </table>
                 </div>
             </div>
@@ -155,7 +147,6 @@
                                 <option value="Bug Fix">Bug Fix (Covered under Warranty)</option>
                                 <option value="Content Update">Content Update</option>
                                 <option value="New Feature">New Feature Development</option>
-                                <option value="Performance">Performance Tuning</option>
                             </select>
                         </div>
                         
@@ -164,31 +155,28 @@
                             <textarea id="maintDesc" rows="4" style="width: 100%; padding: 10px; background: var(--bg-dark); border: 1px solid var(--border); color: white; border-radius: 8px;"></textarea>
                         </div>
 
-                        <div class="addon-group">
-                            <h4 style="margin-bottom: 1rem; color: white;">Premium Add-ons (Post-Warranty / Extra)</h4>
-                            <div class="checkbox-item">
-                                <label><input type="checkbox" class="addon-check" value="5000"> Priority Support (24hr)</label>
+                        <div class="addon-group" style="margin-top: 2rem; padding: 1rem; border: 1px solid var(--border); border-radius: 8px;">
+                            <h4 style="margin-bottom: 1rem; color: white;">Premium Add-ons</h4>
+                            <div class="checkbox-item" style="display:flex; justify-content:space-between; margin-bottom: 10px;">
+                                <label><input type="checkbox" class="addon-check" value="5000"> Priority Support</label>
                                 <span>+₹5,000</span>
                             </div>
-                            <div class="checkbox-item">
-                                <label><input type="checkbox" class="addon-check" value="8000"> SEO Optimization Pack</label>
+                            <div class="checkbox-item" style="display:flex; justify-content:space-between;">
+                                <label><input type="checkbox" class="addon-check" value="8000"> SEO Optimization</label>
                                 <span>+₹8,000</span>
-                            </div>
-                            <div class="checkbox-item">
-                                <label><input type="checkbox" class="addon-check" value="12000"> Server Maintenance (Yearly)</label>
-                                <span>+₹12,000</span>
                             </div>
                         </div>
 
-                        <div class="cost-display">Estimated: <span id="estCost">₹0</span></div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Submit Request</button>
+                        <div class="cost-display" style="font-size: 1.5rem; color: var(--primary); text-align: right; margin: 1rem 0;">
+                            Estimated: <span id="estCost">₹0</span>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Request</button>
                     </form>
                     
                     <div style="background: rgba(99, 102, 241, 0.1); padding: 1.5rem; border-radius: 12px; height: fit-content; border: 1px solid var(--primary);">
-                        <h3 style="color: var(--primary); margin-bottom: 1rem;">Warranty Status</h3>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">Your projects are currently under the 6-month free support period.</p>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">If you select "Bug Fix", the cost is ₹0.</p>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Feature updates and addons are chargeable.</p>
+                        <h3 style="color: var(--primary); margin-bottom: 1rem;">Warranty Info</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">You are in the 6-month free support period.</p>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Bug fixes are free. New features and addons are paid.</p>
                     </div>
                 </div>
             </div>
@@ -201,12 +189,17 @@
             <div id="orderDetails"></div>
         </div>
     </div>
+    
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <button class="btn-secondary" onclick="closeModal('projectModal')" style="float: right;">&times;</button>
+            <div id="projectDetails"></div>
+        </div>
+    </div>
 
     <div id="toast" class="toast"></div>
 
-    <script>
-        const CURRENT_USER = {{ user | tojson | safe }} || null;
-    </script>
+    <script>const CURRENT_USER = {{ user | tojson | safe }} || null;</script>
     <script src="{{ url_for('static', filename='auth.js') }}"></script>
     <script src="{{ url_for('static', filename='admin.js') }}"></script>
     <script src="{{ url_for('static', filename='orders.js') }}"></script>

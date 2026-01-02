@@ -1,5 +1,4 @@
 import os
-import json
 import smtplib
 from datetime import datetime
 from email.mime.text import MIMEText
@@ -54,7 +53,7 @@ class Order(db.Model):
     user_email = db.Column(db.String(100))
     project_name = db.Column(db.String(100))
     amount = db.Column(db.Float)
-    status = db.Column(db.String(50)) # 'Created', 'Paid'
+    status = db.Column(db.String(50))
     payment_id = db.Column(db.String(100))
     date = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -67,27 +66,24 @@ class Contact(db.Model):
     message = db.Column(db.Text)
     date = db.Column(db.DateTime, default=datetime.utcnow)
 
-# UPDATED: Maintenance Requests Model (Added Addons & Cost)
 class Maintenance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_email = db.Column(db.String(100))
     issue_type = db.Column(db.String(100))
     description = db.Column(db.Text)
-    addons = db.Column(db.String(200))      # Stores selected add-ons like 'Priority Support'
-    estimated_cost = db.Column(db.Integer)  # Stores the calculated cost
+    addons = db.Column(db.String(200))      # Stores selected add-ons
+    estimated_cost = db.Column(db.Integer)  # Stores calculated cost
     status = db.Column(db.String(20), default='Pending')
     date = db.Column(db.DateTime, default=datetime.utcnow)
 
 with app.app_context():
     db.create_all()
 
-# --- EMAIL HELPER ---
+# --- EMAIL FUNCTION ---
 def send_email(to_email, subject, body):
     sender_email = os.getenv("MAIL_USERNAME")
     sender_password = os.getenv("MAIL_PASSWORD")
-    
     if not sender_email or not sender_password:
-        print("Email credentials missing in .env")
         return
 
     msg = MIMEMultipart()
@@ -102,9 +98,8 @@ def send_email(to_email, subject, body):
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, to_email, msg.as_string())
         server.quit()
-        print(f"Email sent to {to_email}")
     except Exception as e:
-        print(f"Email error: {e}")
+        print(f"Email Error: {e}")
 
 # --- ROUTES ---
 @app.route('/')
@@ -155,8 +150,7 @@ def logout():
 
 @app.route('/create_order', methods=['POST'])
 def create_order():
-    if 'user' not in session:
-        return jsonify({'error': 'Login required'}), 401
+    if 'user' not in session: return jsonify({'error': 'Login required'}), 401
     
     data = request.json
     amount = float(data.get('amount'))
@@ -164,30 +158,20 @@ def create_order():
     amount_paise = int(amount * 100)
     
     try:
-        razorpay_order = razorpay_client.order.create(dict(
-            amount=amount_paise,
-            currency='INR',
-            receipt=f'order_{int(datetime.now().timestamp())}'
-        ))
+        razorpay_order = razorpay_client.order.create(dict(amount=amount_paise, currency='INR', receipt='order_rcptid_11'))
         new_order = Order(
-            order_id=razorpay_order['id'],
-            user_email=session['user']['email'],
-            project_name=project_name,
-            amount=amount,
-            status='Created'
+            order_id=razorpay_order['id'], user_email=session['user']['email'],
+            project_name=project_name, amount=amount, status='Created'
         )
         db.session.add(new_order)
         db.session.commit()
         
         return jsonify({
-            'order_id': razorpay_order['id'],
-            'amount': amount_paise,
+            'order_id': razorpay_order['id'], 'amount': amount_paise,
             'key': os.getenv("RAZORPAY_KEY_ID"),
-            'user_name': session['user']['name'],
-            'user_email': session['user']['email']
+            'user_name': session['user']['name'], 'user_email': session['user']['email']
         })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception as e: return jsonify({'error': str(e)}), 500
 
 @app.route('/payment_success', methods=['POST'])
 def payment_success():
@@ -198,46 +182,29 @@ def payment_success():
         order.payment_id = data['razorpay_payment_id']
         db.session.commit()
         
-        # Email User
-        send_email(order.user_email, "Order Confirmation", f"Paid ₹{order.amount} for {order.project_name}. Trans ID: {order.payment_id}")
-        # Email Admin
-        send_email("202krishnapatil@gmail.com", "New Order", f"User {order.user_email} paid ₹{order.amount}")
+        send_email(order.user_email, "Order Confirmed", f"Paid ₹{order.amount} for {order.project_name}")
+        send_email("202krishnapatil@gmail.com", "New Order", f"User: {order.user_email}, Amount: {order.amount}")
         
         return jsonify({'status': 'success'})
     return jsonify({'status': 'error'}), 400
-
-@app.route('/api/my_orders')
-def my_orders():
-    if 'user' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-    user_orders = Order.query.filter_by(user_email=session['user']['email']).order_by(Order.date.desc()).all()
-    orders_data = [{'project_name': o.project_name, 'amount': o.amount, 'status': o.status, 'payment_id': o.payment_id or 'N/A', 'date': o.date.strftime('%Y-%m-%d')} for o in user_orders]
-    return jsonify(orders_data)
 
 @app.route('/api/contact', methods=['POST'])
 def submit_contact():
     data = request.json
     new_contact = Contact(
-        name=data['name'],
-        email=data['email'],
-        phone=data['phone'],
-        service=data['service'],
-        message=data['message']
+        name=data['name'], email=data['email'], phone=data['phone'],
+        service=data['service'], message=data['message']
     )
     db.session.add(new_contact)
     db.session.commit()
     send_email("202krishnapatil@gmail.com", "New Contact Inquiry", f"From: {data['name']} ({data['email']})\nMsg: {data['message']}")
     return jsonify({'status': 'success'})
 
-# UPDATED: Submit Maintenance Request (DB Save + Email)
 @app.route('/api/maintenance', methods=['POST'])
 def submit_maintenance():
-    if 'user' not in session:
-        return jsonify({'error': 'Login required'}), 401
+    if 'user' not in session: return jsonify({'error': 'Login required'}), 401
     
     data = request.json
-    
-    # 1. Save to Database
     new_req = Maintenance(
         user_email=session['user']['email'],
         issue_type=data.get('issueType'),
@@ -248,46 +215,28 @@ def submit_maintenance():
     db.session.add(new_req)
     db.session.commit()
     
-    # 2. Email Admin (You)
-    admin_email_body = f"""
-    <h2>New Maintenance Request</h2>
-    <p><b>Client:</b> {session['user']['email']}</p>
-    <p><b>Issue Type:</b> {data.get('issueType')}</p>
-    <p><b>Selected Add-ons:</b> {data.get('addons')}</p>
-    <p><b>Estimated Cost:</b> ₹{data.get('cost')}</p>
-    <hr>
-    <p><b>Description:</b><br>{data.get('description')}</p>
-    """
-    send_email("202krishnapatil@gmail.com", "Maintenance Request Alert", admin_email_body)
+    # Notify Admin
+    send_email("202krishnapatil@gmail.com", "Maintenance Request", 
+               f"User: {session['user']['email']}\nIssue: {data.get('issueType')}\nAddons: {data.get('addons')}\nCost: {data.get('cost')}")
     
-    # 3. Email Client (Confirmation)
-    client_email_body = f"""
-    <h2>Request Received</h2>
-    <p>Hi {session['user']['name']},</p>
-    <p>We received your request for <b>{data.get('issueType')}</b>.</p>
-    <p>Estimated Cost: ₹{data.get('cost')}</p>
-    <p>Our team will review it and contact you shortly.</p>
-    """
-    send_email(session['user']['email'], "Maintenance Request Confirmation", client_email_body)
+    # Notify User
+    send_email(session['user']['email'], "Request Received", "We received your maintenance request and will review it shortly.")
     
     return jsonify({'status': 'success'})
 
-# ADMIN DASHBOARD DATA
+@app.route('/api/my_orders')
+def my_orders():
+    if 'user' not in session: return jsonify({'error': 'Unauthorized'}), 401
+    orders = Order.query.filter_by(user_email=session['user']['email']).order_by(Order.date.desc()).all()
+    return jsonify([{'project_name': o.project_name, 'amount': o.amount, 'status': o.status, 'payment_id': o.payment_id, 'date': o.date.strftime('%Y-%m-%d')} for o in orders])
+
 @app.route('/api/admin/data')
 def admin_data():
-    if 'user' not in session or session['user']['email'] != '202krishnapatil@gmail.com':
-        return jsonify({'error': 'Unauthorized'}), 403
-    
-    users = User.query.all()
-    orders = Order.query.all()
-    contacts = Contact.query.all()
-    maintenance = Maintenance.query.all()
-    
+    if 'user' not in session or session['user']['email'] != '202krishnapatil@gmail.com': return jsonify({'error': 'Unauthorized'}), 403
     return jsonify({
-        'users': [{'name': u.name, 'email': u.email, 'last_login': str(u.created_at)} for u in users],
-        'orders': [{'orderId': o.order_id, 'userName': o.user_email, 'projectName': o.project_name, 'projectPrice': o.amount, 'projectStatus': o.status} for o in orders],
-        'contacts': [{'name': c.name, 'email': c.email, 'service': c.service, 'message': c.message} for c in contacts],
-        'maintenance': [{'user': m.user_email, 'issue': m.issue_type, 'addons': m.addons, 'cost': m.estimated_cost, 'status': m.status} for m in maintenance]
+        'users': [{'name': u.name, 'email': u.email, 'last_login': str(u.created_at)} for u in User.query.all()],
+        'orders': [{'orderId': o.order_id, 'userName': o.user_email, 'projectName': o.project_name, 'projectPrice': o.amount, 'projectStatus': o.status} for o in Order.query.all()],
+        'maintenance': [{'user': m.user_email, 'issue': m.issue_type, 'cost': m.estimated_cost, 'status': m.status} for m in Maintenance.query.all()]
     })
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 // Main Application & Frontend Logic
 
-// 1. Static Project Database (Product Catalog)
+// 1. Static Project Database with REAL IMAGES
 const DATABASE = {
   projects: [
     {
@@ -9,7 +9,7 @@ const DATABASE = {
       description: 'A blazing fast online store with Stripe payments, admin panel, and inventory management.',
       price: 50000,
       category: 'E-commerce',
-      image: 'https://nextbrain.ca/wp-content/uploads/2022/01/1-nbcanada-what-are-the-main-advantages-of-having-an-ecommerce-website-for-your-business-thumbnail.png', 
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRtrfXvmM3ck1zdt7QGgsOYL_rup5hYq_0fw&s', 
       technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
       features: ['Product catalog', 'Shopping cart', 'Payment gateway', 'Order management']
     },
@@ -82,12 +82,12 @@ function renderPortfolio(filter = 'all') {
       </div>
       <div class="project-content">
         <h3>${project.title}</h3>
-        <p>${project.description}</p>
+        <p style="color: #9ca3af; margin-bottom: 1rem;">${project.description}</p>
         <div class="project-tags">
-            ${project.technologies.map(t => `<span class="tag">${t}</span>`).join('')}
+            ${project.technologies.map(t => `<span class="tag" style="display:inline-block; font-size:0.75rem; padding:4px 12px; margin-right:5px; margin-bottom:5px; border-radius:20px; background:rgba(255,255,255,0.05); color:#9ca3af; border:1px solid rgba(255,255,255,0.05);">${t}</span>`).join('')}
         </div>
-        <div class="project-footer">
-          <span class="project-price">₹${project.price.toLocaleString()}</span>
+        <div style="margin-top:auto; display:flex; justify-content:space-between; align-items:center; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.05);">
+          <span style="font-size:1.5rem; font-weight:700; color:#6366f1;">₹${project.price.toLocaleString()}</span>
           <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); orderProject('${project.id}')">Order Now</button>
         </div>
       </div>
@@ -126,20 +126,20 @@ function orderProject(projectId) {
   if (project) ORDERS.showOrderModal(project);
 }
 
-// 3. Navigation & Auth State
+// 3. Navigation & Auth State Logic
 function setupNavigation() {
-    // Mobile Menu
+    // Mobile Menu Toggle
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('navMenu');
     if(hamburger) hamburger.addEventListener('click', () => navMenu.classList.toggle('active'));
 
-    // Scroll Effect
+    // Navbar Scroll Effect
     window.addEventListener('scroll', () => {
         const navbar = document.getElementById('navbar');
         if (navbar) window.scrollY > 50 ? navbar.classList.add('scrolled') : navbar.classList.remove('scrolled');
     });
 
-    // --- CHECK LOGIN STATE ---
+    // --- AUTHENTICATION STATE HANDLING ---
     if (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) {
         // User is Logged In
         const userProfile = document.getElementById('userProfile');
@@ -157,7 +157,14 @@ function setupNavigation() {
     } else {
         // User is Guest
         const loginBtn = document.getElementById('loginBtn');
-        if(loginBtn) loginBtn.addEventListener('click', () => window.location.href = "/login");
+        if(loginBtn) {
+            loginBtn.classList.remove('hidden');
+            loginBtn.addEventListener('click', () => window.location.href = "/login");
+        }
+        
+        // Hide Dashboard Group just in case
+        const userProfile = document.getElementById('userProfile');
+        if(userProfile) userProfile.classList.add('hidden');
     }
 }
 
@@ -199,7 +206,7 @@ function setupForms() {
 
 // 5. DASHBOARD & MAINTENANCE LOGIC
 
-// Toggle Dashboard View
+// Toggle Dashboard View (Open/Close)
 function toggleDashboard() {
     if (!AUTH.currentUser) {
         window.location.href = "/login";
@@ -218,7 +225,7 @@ function toggleDashboard() {
     }
 }
 
-// Switch Tabs inside Dashboard
+// Switch Tabs inside Dashboard (Overview, Orders, Maintenance)
 function switchDashTab(tabId) {
     document.querySelectorAll('.dash-tab').forEach(t => t.classList.add('hidden'));
     document.getElementById(tabId).classList.remove('hidden');
@@ -245,7 +252,7 @@ function setupMaintenanceForm() {
         // Base costs
         if (issue === 'New Feature') cost += 5000;
         if (issue === 'Content Update') cost += 1000;
-        // Bug Fix is 0
+        // Bug Fix is 0 (Free)
         
         // Add-ons
         checkboxes.forEach(cb => {
@@ -255,11 +262,11 @@ function setupMaintenanceForm() {
         estCostDisplay.textContent = '₹' + cost.toLocaleString();
     }
 
-    // Event Listeners
+    // Event Listeners for Calculation
     checkboxes.forEach(cb => cb.addEventListener('change', calculateCost));
     issueSelect.addEventListener('change', calculateCost);
 
-    // Form Submit
+    // Form Submit Handler
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         
@@ -286,21 +293,23 @@ function setupMaintenanceForm() {
             })
         }).then(res => res.json())
         .then(data => {
-            if(data.error) {
-                showToast("Error: " + data.error, "error");
-            } else {
+            if(data.status === 'success') {
                 showToast("Request Submitted! Check your email.", "success");
                 form.reset();
-                calculateCost();
+                calculateCost(); // Reset cost to 0
+            } else {
+                showToast("Error: " + (data.error || "Unknown error"), "error");
             }
-        }).catch(err => showToast("Server error", "error"));
+        }).catch(err => showToast("Server error. Try again later.", "error"));
     });
 }
 
-// Load Real Data into Dashboard
+// Load Real Data into Dashboard (Orders, Total Spent)
 function loadDashboardData() {
+    // Set User Name
     document.getElementById('dashUserName').textContent = AUTH.currentUser.name;
     
+    // Fetch Orders from API
     fetch('/api/my_orders')
     .then(res => res.json())
     .then(orders => {
@@ -308,12 +317,14 @@ function loadDashboardData() {
         const activeCount = document.getElementById('activeProjectsCount');
         const totalSpent = document.getElementById('totalSpentVal');
         
+        // Calculate Stats
         let spent = 0;
         orders.forEach(o => spent += o.amount);
         
         activeCount.textContent = orders.length;
         totalSpent.textContent = '₹' + spent.toLocaleString();
 
+        // Render Table
         if (orders.length === 0) {
             tbody.innerHTML = '<tr><td colspan="4" style="padding:20px; text-align:center; color: #9ca3af;">No orders found.</td></tr>';
         } else {
@@ -329,7 +340,7 @@ function loadDashboardData() {
     });
 }
 
-// 6. Helpers
+// 6. Helpers (Modals, Toasts, Cookies)
 function openModal(id) { document.getElementById(id)?.classList.add('active'); }
 function closeModal(id) { document.getElementById(id)?.classList.remove('active'); }
 function scrollToSection(id) { document.getElementById(id)?.scrollIntoView({behavior: 'smooth'}); }
@@ -356,7 +367,7 @@ function acceptCookies() {
 function showPrivacyPolicy() { alert("Privacy Policy: Your data is secure."); }
 function showTerms() { alert("Terms: Standard service terms apply."); }
 
-// Initialize
+// Initialize Everything on Load
 document.addEventListener('DOMContentLoaded', () => {
     renderPortfolio();
     setupNavigation();
@@ -364,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupMaintenanceForm(); // Activates the calculator
     setupCookieConsent();
     
-    // Global Modal Close
+    // Global Modal Close Logic
     document.querySelectorAll('.modal').forEach(m => {
         m.addEventListener('click', (e) => { if(e.target === m) m.classList.remove('active'); });
     });

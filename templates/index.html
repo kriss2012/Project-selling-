@@ -3,534 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DesignStudio - Professional Web Development Services</title>
-    <link rel="stylesheet" href="style.css">
+    <title>DesignStudio | Premium Web Services</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar" id="navbar">
-        <div class="container nav-container">
-            <div class="logo">
-                <i class="fas fa-cube"></i>
-                <span>DesignStudio</span>
-            </div>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="#home" class="nav-link active">Home</a></li>
-                <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
-                <li><a href="#services" class="nav-link">Services</a></li>
-                <li><a href="#maintenance" class="nav-link">Maintenance</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <div class="nav-actions">
-                <div id="userProfile" class="user-profile hidden">
-                    <img id="userAvatar" src="" alt="User" class="user-avatar">
-                    <span id="userName"></span>
-                    <button id="logoutBtn" class="btn-logout">Logout</button>
-                </div>
-                <button id="loginBtn" class="btn btn-primary">Login with Google</button>
-                <button class="hamburger" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
+    <div class="logo">
+        <i class="fas fa-cube" style="color: #6366f1;"></i>
+        <span>DesignStudio</span>
+    </div>
+    
+    <ul class="nav-menu" id="navMenu">
+        <li><a href="#home" class="nav-link">Home</a></li>
+        <li><a href="#portfolio" class="nav-link">Work</a></li>
+        <li><a href="#maintenance" class="nav-link">Support</a></li>
+    </ul>
 
-    <!-- Hero Section -->
+    <div class="nav-actions">
+        <div id="userProfile" class="user-menu-group hidden">
+            <button onclick="toggleDashboard()" class="btn-dash-trigger">
+                <i class="fas fa-columns"></i> Dashboard
+            </button>
+            <img id="userAvatar" src="" alt="User">
+        </div>
+
+        <button id="loginBtn" class="btn btn-primary">Login</button>
+    </div>
+</nav>
+
     <section id="home" class="hero">
         <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">Transform Your Digital Presence</h1>
-                <p class="hero-subtitle">We create stunning, high-performance websites that drive results and elevate your brand to new heights</p>
-                <div class="hero-buttons">
-                    <button class="btn btn-large btn-primary" onclick="scrollToSection('portfolio')">View Our Work</button>
-                    <button class="btn btn-large btn-secondary" onclick="scrollToSection('contact')">Get Started</button>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="stat-number">200+</span>
-                        <span class="stat-label">Projects Completed</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">150+</span>
-                        <span class="stat-label">Happy Clients</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">5+</span>
-                        <span class="stat-label">Years Experience</span>
-                    </div>
-                </div>
+            <h1 class="hero-title">Digital Excellence.<br>Delivered.</h1>
+            <p class="hero-subtitle">Premium web development with 6 months of free dedicated support. We build future-proof digital experiences.</p>
+            <button class="btn btn-primary" onclick="scrollToSection('portfolio')">View Projects</button>
+            <button class="btn btn-secondary" onclick="scrollToSection('contact')">Contact Us</button>
+        </div>
+    </section>
+
+    <section id="portfolio" class="container">
+        <div class="section-header">
+            <h2>Selected Works</h2>
+            <p style="color: var(--text-muted);">Choose a blueprint to start your project.</p>
+        </div>
+        <div class="portfolio-grid" id="portfolioGrid"></div>
+    </section>
+
+    <section id="maintenance" class="container">
+        <div class="section-header">
+            <h2>Maintenance & Support</h2>
+            <p style="color: var(--text-muted);">Comprehensive care for your digital assets.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-shield-alt" style="color: var(--primary); font-size: 2rem; margin-bottom: 1rem;"></i>
+                <h3>Standard Warranty</h3>
+                <p style="color: #9ca3af; margin-bottom: 1rem;">Included with every project.</p>
+                <ul style="list-style: none; color: #9ca3af; font-size: 0.9rem;">
+                    <li><i class="fas fa-check"></i> 6 Months Free Support</li>
+                    <li><i class="fas fa-check"></i> Critical Bug Fixes</li>
+                    <li><i class="fas fa-check"></i> Monthly Backups</li>
+                </ul>
+            </div>
+            <div class="service-card" style="border-color: var(--primary);">
+                <i class="fas fa-rocket" style="color: var(--primary); font-size: 2rem; margin-bottom: 1rem;"></i>
+                <h3>Premium Care</h3>
+                <p style="color: #9ca3af; margin-bottom: 1rem;">For growing businesses.</p>
+                <ul style="list-style: none; color: #9ca3af; font-size: 0.9rem;">
+                    <li><i class="fas fa-check"></i> Priority 24/7 Support</li>
+                    <li><i class="fas fa-check"></i> Feature Updates</li>
+                    <li><i class="fas fa-check"></i> SEO Monitoring</li>
+                </ul>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="container">
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <h3>Custom Design</h3>
-                    <p>Unique, tailored designs that perfectly match your brand identity and business goals</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Lightning Fast</h3>
-                    <p>Optimized for speed and performance to provide the best user experience possible</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>Fully Responsive</h3>
-                    <p>Beautiful and functional on every device, from mobile phones to desktop computers</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio">
-        <div class="container">
-            <div class="section-header">
-                <h2>Our Portfolio</h2>
-                <p>Explore our recent projects and see the quality of work we deliver</p>
-            </div>
-            <div class="portfolio-filters">
-                <button class="filter-btn active" data-filter="all">All Projects</button>
-                <button class="filter-btn" data-filter="Web Apps">Web Apps</button>
-                <button class="filter-btn" data-filter="E-commerce">E-commerce</button>
-                <button class="filter-btn" data-filter="Landing Pages">Landing Pages</button>
-                <button class="filter-btn" data-filter="Custom Development">Custom Development</button>
-            </div>
-            <div class="portfolio-grid" id="portfolioGrid"></div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <div class="container">
-            <div class="section-header">
-                <h2>Our Services</h2>
-                <p>Comprehensive web development solutions for your business needs</p>
-            </div>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-code"></i></div>
-                    <h3>Custom Web Development</h3>
-                    <p>Tailored websites built from scratch to match your exact requirements and business goals</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-shopping-cart"></i></div>
-                    <h3>E-commerce Solutions</h3>
-                    <p>Complete online store setup with payment integration and inventory management systems</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-laptop"></i></div>
-                    <h3>Web App Development</h3>
-                    <p>Full-featured web applications built with modern frameworks and cutting-edge technologies</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-paint-brush"></i></div>
-                    <h3>UI/UX Design</h3>
-                    <p>Beautiful, user-friendly interfaces that convert visitors to customers and drive engagement</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-wrench"></i></div>
-                    <h3>Maintenance &amp; Support</h3>
-                    <p>24/7 technical support and regular updates to keep your site running smoothly and securely</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-chart-line"></i></div>
-                    <h3>SEO Optimization</h3>
-                    <p>Improve your search rankings and drive organic traffic to grow your online presence</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Maintenance Services Section -->
-    <section id="maintenance" class="maintenance">
-        <div class="container">
-            <div class="section-header">
-                <h2>Maintenance Services</h2>
-                <p>Keep your website running smoothly with our comprehensive maintenance packages</p>
-            </div>
-            <div class="maintenance-grid">
-                <div class="maintenance-card">
-                    <div class="maintenance-icon"><i class="fas fa-bug"></i></div>
-                    <h3>Bug Fixing &amp; Error Resolution</h3>
-                    <p>Quick resolution of technical issues and bugs</p>
-                    <span class="turnaround">Turnaround: 24-48 hours</span>
-                </div>
-                <div class="maintenance-card">
-                    <div class="maintenance-icon"><i class="fas fa-sync"></i></div>
-                    <h3>Website Updates</h3>
-                    <p>Content updates, design changes, and feature additions</p>
-                    <span class="turnaround">Turnaround: 2-5 business days</span>
-                </div>
-                <div class="maintenance-card">
-                    <div class="maintenance-icon"><i class="fas fa-tachometer-alt"></i></div>
-                    <h3>Performance Optimization</h3>
-                    <p>Speed improvements and optimization for better UX</p>
-                    <span class="turnaround">Turnaround: 3-7 business days</span>
-                </div>
-                <div class="maintenance-card">
-                    <div class="maintenance-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3>Security Updates</h3>
-                    <p>Regular security patches and vulnerability fixes</p>
-                    <span class="turnaround">Turnaround: 24 hours</span>
-                </div>
-                <div class="maintenance-card">
-                    <div class="maintenance-icon"><i class="fas fa-database"></i></div>
-                    <h3>Backup &amp; Recovery</h3>
-                    <p>Regular backups and disaster recovery services</p>
-                    <span class="turnaround">Turnaround: Ongoing</span>
-                </div>
-                <div class="maintenance-card">
-                    <div class="maintenance-icon"><i class="fas fa-headset"></i></div>
-                    <h3>Technical Support</h3>
-                    <p>24/7 technical assistance via email or chat</p>
-                    <span class="turnaround">Turnaround: Immediate</span>
-                </div>
-            </div>
-            <div class="maintenance-request">
-                <h3>Request Maintenance Service</h3>
-                <form id="maintenanceForm" class="maintenance-form">
-                    <div class="form-group">
-                        <label>Issue Type</label>
-                        <select id="issueType" required>
-                            <option value="">Select Issue Type</option>
-                            <option value="Bug Fixing & Error Resolution">Bug Fixing &amp; Error Resolution</option>
-                            <option value="Website Updates">Website Updates</option>
-                            <option value="Performance Optimization">Performance Optimization</option>
-                            <option value="Security Updates">Security Updates</option>
-                            <option value="Backup & Recovery">Backup &amp; Recovery</option>
-                            <option value="Technical Support">Technical Support</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Urgency Level</label>
-                        <select id="urgency" required>
-                            <option value="">Select Urgency</option>
-                            <option value="High">High</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Low">Low</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Issue Description</label>
-                        <textarea id="issueDescription" rows="5" placeholder="Describe your issue in detail..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit Request</button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section class="testimonials">
-        <div class="container">
-            <div class="section-header">
-                <h2>Client Testimonials</h2>
-                <p>What our clients say about working with us</p>
-            </div>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <p>"Krishna delivered an outstanding e-commerce platform for our business. The attention to detail and professional approach exceeded our expectations."</p>
-                    <div class="testimonial-author">
-                        <strong>Rajesh Kumar</strong>
-                        <span>TechStart Solutions</span>
-                    </div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <p>"The booking system created for our gym has streamlined our operations. Highly recommend DesignStudio for any web development needs."</p>
-                    <div class="testimonial-author">
-                        <strong>Priya Sharma</strong>
-                        <span>Fitness First Gym</span>
-                    </div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <p>"Our property portal has helped us increase leads by 200%. The platform is fast, beautiful, and easy to manage."</p>
-                    <div class="testimonial-author">
-                        <strong>Amit Patel</strong>
-                        <span>Real Estate Pro</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2>About DesignStudio</h2>
-                    <p class="lead">Building exceptional digital experiences since 2020</p>
-                    <p>Hi, I'm Krishna Patil, the founder of DesignStudio. With over 5 years of experience in web development, I specialize in creating custom websites and web applications that help businesses grow online.</p>
-                    <p>Based in Pachora, Maharashtra, I've had the privilege of working with clients across India, delivering high-quality web solutions that combine beautiful design with powerful functionality.</p>
-                    <div class="skills">
-                        <h3>Technical Expertise</h3>
-                        <div class="skill-tags">
-                            <span class="skill-tag">React</span>
-                            <span class="skill-tag">Node.js</span>
-                            <span class="skill-tag">MongoDB</span>
-                            <span class="skill-tag">Express</span>
-                            <span class="skill-tag">Vue.js</span>
-                            <span class="skill-tag">Next.js</span>
-                            <span class="skill-tag">PostgreSQL</span>
-                            <span class="skill-tag">AWS</span>
-                            <span class="skill-tag">Firebase</span>
-                            <span class="skill-tag">Tailwind CSS</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="about-values">
-                    <div class="value-card">
-                        <i class="fas fa-bullseye"></i>
-                        <h3>Our Mission</h3>
-                        <p>To empower businesses with cutting-edge web solutions that drive growth and success</p>
-                    </div>
-                    <div class="value-card">
-                        <i class="fas fa-award"></i>
-                        <h3>Why Choose Us</h3>
-                        <ul>
-                            <li>100% Client Satisfaction</li>
-                            <li>On-Time Delivery</li>
-                            <li>Post-Launch Support</li>
-                            <li>Competitive Pricing</li>
-                            <li>Modern Technologies</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <div class="section-header">
-                <h2>Get In Touch</h2>
-                <p>Ready to start your project? Let's discuss how we can help</p>
-            </div>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h3>Contact Information</h3>
-                    <div class="contact-item">
-                        <i class="fas fa-user"></i>
-                        <div>
-                            <strong>Name</strong>
-                            <p>Krishna Patil</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <div>
-                            <strong>Email</strong>
-                            <p>202krishnapatil@gmail.com</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <div>
-                            <strong>Phone</strong>
-                            <p>+91 [Add your phone number]</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <strong>Location</strong>
-                            <p>Pachora, Maharashtra, India</p>
-                        </div>
-                    </div>
-                    <div class="social-links">
-                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" target="_blank"><i class="fab fa-github"></i></a>
-                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <form id="contactForm" class="contact-form">
-                    <div class="form-group">
-                        <label>Your Name</label>
-                        <input type="text" id="contactName" placeholder="Enter your name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" id="contactEmail" placeholder="Enter your email" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" id="contactPhone" placeholder="Enter your phone" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Service Interested In</label>
-                        <select id="serviceInterest" required>
-                            <option value="">Select a service</option>
-                            <option value="Custom Web Development">Custom Web Development</option>
-                            <option value="E-commerce Solutions">E-commerce Solutions</option>
-                            <option value="Web App Development">Web App Development</option>
-                            <option value="UI/UX Design">UI/UX Design</option>
-                            <option value="Maintenance & Support">Maintenance &amp; Support</option>
-                            <option value="SEO Optimization">SEO Optimization</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Message</label>
-                        <textarea id="contactMessage" rows="5" placeholder="Tell us about your project..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-large">Send Message</button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="logo">
-                        <i class="fas fa-cube"></i>
-                        <span>DesignStudio</span>
-                    </div>
-                    <p>Building exceptional digital experiences that transform businesses and delight users.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#portfolio">Portfolio</a></li>
-                        <li><a href="#services">Services</a></li>
-                        <li><a href="#about">About</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Services</h4>
-                    <ul>
-                        <li><a href="#services">Web Development</a></li>
-                        <li><a href="#services">E-commerce</a></li>
-                        <li><a href="#services">Web Apps</a></li>
-                        <li><a href="#maintenance">Maintenance</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="#" onclick="showPrivacyPolicy()">Privacy Policy</a></li>
-                        <li><a href="#" onclick="showTerms()">Terms of Service</a></li>
-                        <li><a href="#contact">Contact Us</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 DesignStudio by Krishna Patil. All rights reserved.</p>
-                <a href="#" id="adminLink">Admin Login</a>
-            </div>
+            <p>&copy; 2026 DesignStudio. Built by Krishna Patil.</p>
+            <p><a href="{{ payment_link }}" target="_blank" style="color: var(--primary); text-decoration: none;">Pay via Razorpay Link</a></p>
+            <a href="#" id="adminLink" style="font-size: 0.8rem; color: #333;">Admin</a>
         </div>
     </footer>
 
-    <!-- Modals -->
-    <div id="projectModal" class="modal">
-        <div class="modal-content modal-large">
-            <button class="modal-close" onclick="closeModal('projectModal')">&times;</button>
-            <div id="projectDetails"></div>
+    <section id="clientDashboard" class="dashboard-view">
+        <div class="sidebar">
+            <div class="logo" style="margin-bottom: 3rem;">
+                <i class="fas fa-cube" style="color: var(--primary);"></i> DesignStudio
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="sidebar-link active" onclick="switchDashTab('dash-overview')"><i class="fas fa-home"></i> Overview</a></li>
+                <li><a href="#" class="sidebar-link" onclick="switchDashTab('dash-orders')"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+                <li><a href="#" class="sidebar-link" onclick="switchDashTab('dash-maintenance')"><i class="fas fa-tools"></i> Request Support</a></li>
+            </ul>
+            <div style="margin-top: auto;">
+                <button id="logoutBtn" class="btn btn-secondary" style="width: 100%;">Logout</button>
+                <button onclick="toggleDashboard()" class="btn btn-secondary" style="width: 100%; margin-top: 10px; border:none;">Close View</button>
+            </div>
         </div>
-    </div>
+
+        <div class="dashboard-content">
+            <div id="dash-overview" class="dash-tab">
+                <div class="dash-header">
+                    <h2>Welcome back, <span id="dashUserName">User</span></h2>
+                    <span class="tag" style="background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 5px 10px; border-radius: 20px;">Client Account</span>
+                </div>
+                <div class="status-card-grid">
+                    <div class="stat-box">
+                        <h3>Active Projects</h3>
+                        <div class="val" id="activeProjectsCount">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <h3>Total Spent</h3>
+                        <div class="val" id="totalSpentVal">₹0</div>
+                    </div>
+                    <div class="stat-box">
+                        <h3>Warranty Status</h3>
+                        <div class="val" style="font-size: 1.2rem; color: #4ade80;">Active</div>
+                        <small style="color: var(--text-muted);">Ends in 180 days</small>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-orders" class="dash-tab hidden">
+                <div class="dash-header"><h2>Order History</h2></div>
+                <div style="background: var(--bg-card); border-radius: 12px; overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse; color: var(--text-muted);">
+                        <thead style="background: rgba(255,255,255,0.05);">
+                            <tr>
+                                <th style="padding: 15px; text-align: left;">Date</th>
+                                <th style="padding: 15px; text-align: left;">Project</th>
+                                <th style="padding: 15px; text-align: left;">Amount</th>
+                                <th style="padding: 15px; text-align: left;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashOrdersTable">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="dash-maintenance" class="dash-tab hidden">
+                <div class="dash-header"><h2>Support Request</h2></div>
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                    <form id="enhancedMaintForm" style="background: var(--bg-card); padding: 2rem; border-radius: 12px;">
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Issue Type</label>
+                            <select id="maintIssueType" style="width: 100%; padding: 10px; background: var(--bg-dark); border: 1px solid var(--border); color: white; border-radius: 8px;">
+                                <option value="Bug Fix">Bug Fix (Covered under Warranty)</option>
+                                <option value="Content Update">Content Update</option>
+                                <option value="New Feature">New Feature Development</option>
+                                <option value="Performance">Performance Tuning</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Description</label>
+                            <textarea id="maintDesc" rows="4" style="width: 100%; padding: 10px; background: var(--bg-dark); border: 1px solid var(--border); color: white; border-radius: 8px;"></textarea>
+                        </div>
+
+                        <div class="addon-group">
+                            <h4 style="margin-bottom: 1rem; color: white;">Premium Add-ons (Post-Warranty / Extra)</h4>
+                            <div class="checkbox-item">
+                                <label><input type="checkbox" class="addon-check" value="5000"> Priority Support (24hr)</label>
+                                <span>+₹5,000</span>
+                            </div>
+                            <div class="checkbox-item">
+                                <label><input type="checkbox" class="addon-check" value="8000"> SEO Optimization Pack</label>
+                                <span>+₹8,000</span>
+                            </div>
+                            <div class="checkbox-item">
+                                <label><input type="checkbox" class="addon-check" value="12000"> Server Maintenance (Yearly)</label>
+                                <span>+₹12,000</span>
+                            </div>
+                        </div>
+
+                        <div class="cost-display">Estimated: <span id="estCost">₹0</span></div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Submit Request</button>
+                    </form>
+                    
+                    <div style="background: rgba(99, 102, 241, 0.1); padding: 1.5rem; border-radius: 12px; height: fit-content; border: 1px solid var(--primary);">
+                        <h3 style="color: var(--primary); margin-bottom: 1rem;">Warranty Status</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Your projects are currently under the 6-month free support period.</p>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">If you select "Bug Fix", the cost is ₹0.</p>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Feature updates and addons are chargeable.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <div id="orderModal" class="modal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('orderModal')">&times;</button>
+            <button class="btn-secondary" onclick="closeModal('orderModal')" style="float: right;">&times;</button>
             <div id="orderDetails"></div>
         </div>
     </div>
 
-    <div id="adminLoginModal" class="modal">
-        <div class="modal-content modal-small">
-            <button class="modal-close" onclick="closeModal('adminLoginModal')">&times;</button>
-            <h2>Admin Login</h2>
-            <form id="adminLoginForm">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="adminEmail" placeholder="admin@example.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="adminPassword" placeholder="Enter password" required>
-                </div>
-                <button type="submit" class="btn btn-primary btn-full">Login to Dashboard</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="adminDashboard" class="admin-dashboard hidden">
-        <div class="admin-header">
-            <div class="admin-logo">
-                <i class="fas fa-cube"></i>
-                <span>DesignStudio Admin</span>
-            </div>
-            <button class="btn btn-secondary" onclick="closeAdminDashboard()">Close Dashboard</button>
-        </div>
-        <div class="admin-sidebar">
-            <ul class="admin-menu">
-                <li><a href="#" class="admin-menu-item active" data-tab="overview"><i class="fas fa-chart-line"></i> Overview</a></li>
-                <li><a href="#" class="admin-menu-item" data-tab="users"><i class="fas fa-users"></i> Users</a></li>
-                <li><a href="#" class="admin-menu-item" data-tab="orders"><i class="fas fa-shopping-bag"></i> Orders</a></li>
-                <li><a href="#" class="admin-menu-item" data-tab="maintenance"><i class="fas fa-wrench"></i> Maintenance</a></li>
-                <li><a href="#" class="admin-menu-item" data-tab="contacts"><i class="fas fa-envelope"></i> Contacts</a></li>
-                <li><a href="#" class="admin-menu-item" data-tab="analytics"><i class="fas fa-chart-bar"></i> Analytics</a></li>
-                <li><a href="#" class="admin-menu-item" data-tab="settings"><i class="fas fa-cog"></i> Settings</a></li>
-            </ul>
-        </div>
-        <div class="admin-content" id="adminContent"></div>
-    </div>
-
-    <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
 
-    <!-- Cookie Consent -->
-    <div id="cookieConsent" class="cookie-consent">
-        <p>We use cookies to enhance your browsing experience. By continuing to use this site, you agree to our use of cookies.</p>
-        <button class="btn btn-primary btn-small" onclick="acceptCookies()">Accept</button>
-    </div>
-
-    <script src="auth.js"></script>
-    <script src="admin.js"></script>
-    <script src="orders.js"></script>
-    <script src="app.js"></script>
+    <script>
+        const CURRENT_USER = {{ user | tojson | safe }} || null;
+    </script>
+    <script src="{{ url_for('static', filename='auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='admin.js') }}"></script>
+    <script src="{{ url_for('static', filename='orders.js') }}"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

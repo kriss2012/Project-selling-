@@ -1,72 +1,34 @@
 // Authentication Module
-// Note: Using in-memory storage instead of sessionStorage due to sandbox restrictions
+// Connects with Python Backend via index.html injected variable
+
 const AUTH = {
   currentUser: null,
-  sessionData: {},
   
   init() {
-    this.checkSession();
-    this.setupGoogleLogin();
+    // Check for user injected from Python (index.html)
+    if (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) {
+      this.currentUser = CURRENT_USER;
+      this.updateUI();
+    }
     this.setupEventListeners();
   },
   
-  setupGoogleLogin() {
-    // Initialize Google Sign-In
-    // Note: In production, you'll need to add your Google Client ID
-    // Get it from: https://console.developers.google.com/
-    
+  setupEventListeners() {
     const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Redirect to Python Google Login route
     if (loginBtn) {
       loginBtn.addEventListener('click', () => {
-        this.simulateGoogleLogin();
+        window.location.href = "/login";
       });
     }
-  },
-  
-  simulateGoogleLogin() {
-    // Simulate Google OAuth login
-    // In production, this would use actual Google Sign-In API
-    const user = {
-      userId: 'user-' + Date.now(),
-      name: prompt('Enter your name:') || 'Demo User',
-      email: prompt('Enter your email:') || 'user@example.com',
-      profilePicture: 'https://ui-avatars.com/api/?name=' + encodeURIComponent('Demo User') + '&background=4F46E5&color=fff',
-      loginTimestamp: new Date().toISOString(),
-      loginCount: 1
-    };
-    
-    if (user.name && user.email) {
-      this.handleLoginSuccess(user);
-    }
-  },
-  
-  handleLoginSuccess(user) {
-    // Save user to session (in-memory)
-    this.currentUser = user;
-    this.sessionData.currentUser = user;
-    
-    // Save to users database
-    const existingUser = DATABASE.users.find(u => u.email === user.email);
-    if (existingUser) {
-      existingUser.loginCount++;
-      existingUser.lastLogin = user.loginTimestamp;
-    } else {
-      DATABASE.users.push({
-        ...user,
-        registeredDate: user.loginTimestamp,
-        orders: []
+
+    // Redirect to Python Logout route
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        window.location.href = "/logout";
       });
-    }
-    
-    this.updateUI();
-    showToast('Login successful! Welcome ' + user.name, 'success');
-  },
-  
-  checkSession() {
-    // Check in-memory session
-    if (this.sessionData.currentUser) {
-      this.currentUser = this.sessionData.currentUser;
-      this.updateUI();
     }
   },
   
@@ -79,36 +41,25 @@ const AUTH = {
     if (this.currentUser) {
       loginBtn.classList.add('hidden');
       userProfile.classList.remove('hidden');
-      userAvatar.src = this.currentUser.profilePicture;
+      // Google provides 'picture' field, mapped in Python
+      userAvatar.src = this.currentUser.picture;
       userName.textContent = this.currentUser.name;
     } else {
       loginBtn.classList.remove('hidden');
       userProfile.classList.add('hidden');
     }
   },
-  
-  logout() {
-    this.currentUser = null;
-    this.sessionData.currentUser = null;
-    this.updateUI();
-    showToast('Logged out successfully', 'success');
-  },
-  
+
+  // Helper for other modules
   requireLogin(callback) {
     if (!this.currentUser) {
       showToast('Please login to continue', 'error');
-      document.getElementById('loginBtn').click();
+      // Trigger Python login
+      window.location.href = "/login";
       return false;
     }
     callback();
     return true;
-  },
-  
-  setupEventListeners() {
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => this.logout());
-    }
   }
 };
 
